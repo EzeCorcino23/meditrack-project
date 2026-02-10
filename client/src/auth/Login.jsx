@@ -4,45 +4,36 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 
 export default function Login() {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
-  const fakeUser = {
-  email: "admin@meditrack.com",
-  password: "123456",
-};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-const handleSubmit = (e) => {
-  e.preventDefault();
+    try {
+      setLoading(true);
 
-  if (email === fakeUser.email && password === fakeUser.password) {
-    localStorage.setItem("token", "fake-token");
-    navigate("/dashboard");
-  } else {
-    alert("Credenciales incorrectas");
-  }
-};
-   // ESTO QUE ESTA ACA ES EL LOGIN CON AUTENCITACION REAL, MIENTRASTANTO USAMOS EL FAKEUSER !!!
+      const response = await api.post("/auth/login", {
+        email,
+        password,
+      });
 
-  /*const handleSubmit = async (e) => {
-  e.preventDefault();
+      // guardar token
+      localStorage.setItem("token", response.data.token);
 
-  try {
-    const response = await api.post("/auth/login", {
-      email,
-      password,
-    });
+      // redirigir
+      navigate("/dashboard");
 
-    localStorage.setItem("token", response.data.token);
-    navigate("/dashboard");
-
-  } catch (error) {
-    alert("Credenciales incorrectas");
-  }
-};*/
-
+    } catch (error) {
+      alert("Credenciales incorrectas");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Box
@@ -81,8 +72,9 @@ const handleSubmit = (e) => {
             fullWidth
             type="submit"
             sx={{ mt: 2 }}
+            disabled={loading}
           >
-            Iniciar sesión
+            {loading ? "Ingresando..." : "Iniciar sesión"}
           </Button>
         </form>
       </Box>
