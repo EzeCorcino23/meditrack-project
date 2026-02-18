@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "../auth/Login";
-import Dashboard from "../pages/Dashboard";
+import Dashboard from "../pages/Admindashboard";
 import ProtectedRoute from "../components/ProtectedRoute";
 
 export default function AppRouter() {
